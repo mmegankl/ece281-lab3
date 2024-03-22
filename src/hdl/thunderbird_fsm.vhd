@@ -11,8 +11,8 @@
 --| ---------------------------------------------------------------------------
 --|
 --| FILENAME      : thunderbird_fsm.vhd
---| AUTHOR(S)     : Capt Phillip Warner, Capt Dan Johnson
---| CREATED       : 03/2017 Last modified 06/25/2020
+--| AUTHOR(S)     : Capt Phillip Warner, Capt Dan Johnson, C3C Megan Leong
+--| CREATED       : 03/2017 Last modified 03/19/2024
 --| DESCRIPTION   : This file implements the ECE 281 Lab 2 Thunderbird tail lights
 --|					FSM using enumerated types.  This was used to create the
 --|					erroneous sim for GR1
@@ -36,18 +36,18 @@
 --|					can be changed by the inputs
 --|					
 --|
---|                 xxx State Encoding key
+--|                 Binary State Encoding key
 --|                 --------------------
 --|                  State | Encoding
 --|                 --------------------
---|                  OFF   | 
---|                  ON    | 
---|                  R1    | 
---|                  R2    | 
---|                  R3    | 
---|                  L1    | 
---|                  L2    | 
---|                  L3    | 
+--|                  OFF   | 000
+--|                  ON    | 100
+--|                  R1    | 111
+--|                  R2    | 110
+--|                  R3    | 101
+--|                  L1    | 001
+--|                  L2    | 010
+--|                  L3    | 011
 --|                 --------------------
 --|
 --|
@@ -87,21 +87,70 @@ library ieee;
  
 entity thunderbird_fsm is 
   port(
-	
+	 i_clk, i_reset  : in    std_logic;
+     i_left, i_right : in    std_logic;
+     o_lights_L      : out   std_logic_vector(2 downto 0);
+     o_lights_R      : out   std_logic_vector(2 downto 0)
   );
 end thunderbird_fsm;
 
 architecture thunderbird_fsm_arch of thunderbird_fsm is 
 
 -- CONSTANTS ------------------------------------------------------------------
+    signal f_Q      : std_logic_vector (2 downto 0) := "000";
+    signal f_Q_next : std_logic_vector (2 downto 0) := "000";
   
 begin
 
-	-- CONCURRENT STATEMENTS --------------------------------------------------------	
+	-- CONCURRENT STATEMENTS --------------------------------------------------------
+	-- Next State Logic --	
+	f_Q_next(2) <= (not f_Q(2) and not f_Q(1) and not f_Q(0) and not i_left and i_right) 
+	               or (not f_Q(2) and not f_Q(1) and not f_Q(0) and i_left and i_right)
+	               or (f_Q(2) and f_Q(1) and f_Q(0))
+	               or (f_Q(2) and f_Q(1) and not f_Q(0));
+    f_Q_next(1) <= (not f_Q(2) and not f_Q(1) and not f_Q(0) and not i_left and i_right)
+                   or (f_Q(2) and f_Q(1) and f_Q(0))
+                   or (not f_Q(2) and not f_Q(1) and f_Q(0))
+                   or (not f_Q(2) and f_Q(1) and not f_Q(0));
+   f_Q_next(0) <= (not f_Q(2) and not f_Q(1) and not f_Q(0) and not i_left and i_right)
+                   or (not f_Q(2) and not f_Q(1) and not f_Q(0) and i_left and not i_right)
+                   or (f_Q(2) and f_Q(1) and not f_Q(0))
+                   or (not f_Q(2) and f_Q(1) and not f_Q(0));
 	
+	-- Output Logic --
+	o_lights_L(2) <= (f_Q(2) and not f_Q(1) and not f_Q(0))
+	                 or (not f_Q(2) and f_Q(1) and f_Q(0));
+    o_lights_L(1) <= (f_Q(2) and not f_Q(1) and not f_Q(0))
+                     or (not f_Q(2) and f_Q(1) and not f_Q(0))
+                     or (not f_Q(2) and f_Q(1) and f_Q(0));
+    o_lights_L(0) <= (f_Q(2) and not f_Q(1) and not f_Q(0))
+                     or (not f_Q(2) and not f_Q(1) and f_Q(0))
+                     or (f_Q(2) and not f_Q(1) and f_Q(0))
+                     or (not f_Q(2) and f_Q(1) and f_Q(0));
+    o_lights_R(0) <= (f_Q(2) and not f_Q(1) and not f_Q(0))
+                     or (f_Q(2) and not f_Q(1) and f_Q(0))
+                     or (f_Q(2) and f_Q(1) and not f_Q(0))
+                     or (f_Q(2) and f_Q(1) and f_Q(0));
+    o_lights_R(1) <= (f_Q(2) and not f_Q(1) and not f_Q(0))
+                     or (f_Q(2) and f_Q(1) and not f_Q(0))
+                     or (f_Q(2) and f_Q(1) and f_Q(0));
+    o_lights_R(2) <= (f_Q(2) and not f_Q(1) and not f_Q(0))
+                     or (f_Q(2) and f_Q(1) and f_Q(0));                 
+                     
     ---------------------------------------------------------------------------------
 	
 	-- PROCESSES --------------------------------------------------------------------
+	register_proc : process (i_clk, i_reset)
+        begin
+            --Reset state is yellow
+             if i_reset = '1' then
+                   f_Q <= "000";        -- reset state is OFF
+               elsif (rising_edge(i_clk)) then
+                   f_Q <= f_Q_next;    -- next state becomes current state
+               end if;
+    
+    
+        end process register_proc;
     
 	-----------------------------------------------------					   
 				  
