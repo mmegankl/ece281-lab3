@@ -125,7 +125,7 @@ begin
           generic map ( k_DIV => 25000000 ) -- 4 Hz clock from 100 MHz
           port map (                          
               i_clk   => clk,
-              i_reset => btnL,
+              i_reset => btnR,
               o_clk   => w_clk
           );    
    
