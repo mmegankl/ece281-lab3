@@ -114,8 +114,8 @@ begin
        -- sequential timing        
        w_reset <= '1';
        wait for k_clk_period;
-             assert w_Light_L = "000" report "reset" severity failure;
-             assert w_Light_R = "000" report "reset" severity failure;
+             assert w_Light_L = "000" report "did not reset" severity failure;
+             assert w_Light_R = "000" report "did not reset" severity failure;
        
        wait for k_clk_period;
        w_reset <= '0';    
@@ -123,8 +123,8 @@ begin
        -- No input
        w_left <= '0'; w_right <= '0';   
        wait for k_clk_period;
-            assert w_Light_L = "000" report "hazards on; all L lights on" severity failure;
-            assert w_Light_R = "000" report "hazards on; all R lights on" severity failure;  
+            assert w_Light_L = "000" report "lights on with no input (L)" severity failure;
+            assert w_Light_R = "000" report "lights on with no input (R)" severity failure;  
             
        w_reset <= '1';
        wait for k_clk_period;
@@ -133,11 +133,11 @@ begin
        -- Hazard lights on
        w_left <= '1'; w_right <= '1'; 
        wait for k_clk_period;
-            assert w_Light_L = "111" report "hazards on; all L lights on" severity failure;
-            assert w_Light_R = "111" report "hazards on; all R lights on" severity failure;
+            assert w_Light_L = "111" report "hazards on; all L lights are on" severity failure;
+            assert w_Light_R = "111" report "hazards on; all R lights are on" severity failure;
        wait for k_clk_period;
-            assert w_Light_L = "000" report "hazards on; all L lights off" severity failure;
-            assert w_Light_R = "000" report "hazards on; all L lights off" severity failure;
+            assert w_Light_L = "000" report "hazards off; all L lights not off" severity failure;
+            assert w_Light_R = "000" report "hazards off; all L lights not off" severity failure;
             
        w_reset <= '1';
        wait for k_clk_period;
@@ -146,14 +146,14 @@ begin
        -- Left Blinker on
        w_left <= '1'; w_right <= '0'; 
        wait for k_clk_period;
-            assert w_Light_L = "001" report "L blinker on" severity failure;
-            assert w_Light_R = "000" report "R lights off" severity failure;
+            assert w_Light_L = "001" report "first L light not on" severity failure;
+            assert w_Light_R = "000" report "not all R lights off" severity failure;
        wait for k_clk_period;
-            assert w_Light_L = "011" report "L blinker on" severity failure;
-            assert w_Light_R = "000" report "R lights off" severity failure;
+            assert w_Light_L = "011" report "first and second L lights not on" severity failure;
+            assert w_Light_R = "000" report "not all R lights off" severity failure;
        wait for k_clk_period;
-            assert w_Light_L = "111" report "L blinker on" severity failure;
-            assert w_Light_R = "000" report "R lights off" severity failure;
+            assert w_Light_L = "111" report "not all L lights on" severity failure;
+            assert w_Light_R = "000" report "not all R lights off" severity failure;
        wait for k_clk_period;
        
        w_reset <= '1';
@@ -163,19 +163,15 @@ begin
        -- Right Blinker on
        w_left <= '0'; w_right <= '1'; 
        wait for k_clk_period;
-            assert w_Light_L = "000" report "L blinker off" severity failure;
-            assert w_Light_R = "001" report "R lights on" severity failure;
+            assert w_Light_L = "000" report "not all L lights off" severity failure;
+            assert w_Light_R = "001" report "first R light not on" severity failure;
        wait for k_clk_period;
-            assert w_Light_L = "000" report "L blinker off" severity failure;
-            assert w_Light_R = "011" report "R lights on" severity failure;
+            assert w_Light_L = "000" report "not all L lights off" severity failure;
+            assert w_Light_R = "011" report "first and second R lights not on" severity failure;
        wait for k_clk_period;
-            assert w_Light_L = "000" report "L blinker off" severity failure;
-            assert w_Light_R = "111" report "R lights on" severity failure;
+            assert w_Light_L = "000" report "not all L lights off" severity failure;
+            assert w_Light_R = "111" report "not all R lights on" severity failure;
        wait for k_clk_period;
-       
-       w_reset <= '1';
-       wait for k_clk_period;
-       w_reset <= '0';
               
        w_reset <= '1'; 
        wait;
