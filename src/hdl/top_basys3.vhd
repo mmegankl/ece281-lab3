@@ -111,7 +111,7 @@ begin
 	thunderbird_fsm_inst: thunderbird_fsm
       port map (
          i_clk           => w_clk,
-         i_reset         => btnL,
+         i_reset         => btnR,
          i_left          => sw(0), 
          i_right         => sw(1),
          o_lights_L      => led(15 downto 13),
@@ -125,7 +125,7 @@ begin
           generic map ( k_DIV => 25000000 ) -- 4 Hz clock from 100 MHz
           port map (                          
               i_clk   => clk,
-              i_reset => btnR,
+              i_reset => btnL,
               o_clk   => w_clk
           );    
    

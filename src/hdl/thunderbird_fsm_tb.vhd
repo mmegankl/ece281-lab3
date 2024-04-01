@@ -89,8 +89,8 @@ begin
 	   i_left => w_left,
 	   i_right => w_right,
 	   i_clk => w_clk,
-	   o_lights_R => w_Light_R(2 downto 0),
-	   o_lights_L => w_Light_L(2 downto 0)
+	   o_lights_R(2 downto 0) => w_Light_R(2 downto 0),
+	   o_lights_L(2 downto 0) => w_Light_L(2 downto 0)
 	   
 	);  	
 	-----------------------------------------------------
@@ -117,9 +117,18 @@ begin
              assert w_Light_L = "000" report "reset" severity failure;
              assert w_Light_R = "000" report "reset" severity failure;
        
+       wait for k_clk_period;
+       w_reset <= '0';    
+       
+       -- No input
+       w_left <= '0'; w_right <= '0';   
+       wait for k_clk_period;
+            assert w_Light_L = "000" report "hazards on; all L lights on" severity failure;
+            assert w_Light_R = "000" report "hazards on; all R lights on" severity failure;  
+            
        w_reset <= '1';
        wait for k_clk_period;
-       w_reset <= '0';                        
+       w_reset <= '0';                
        
        -- Hazard lights on
        w_left <= '1'; w_right <= '1'; 
