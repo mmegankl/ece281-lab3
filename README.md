@@ -30,4 +30,4 @@ If any of the `assert` statements fail **with** `severity error` then GHDL will 
 ## DOCUMENTATION STATEMENT
 My lab partner, C3C Leah Cook, and I worked on the project in class as well as C3C Kayla Morales.
 On 21Mar24, I got help from C3C Joshua Wynn on the thunderbird testbench file to fix my output signals
-and therefore my assert statements. He also helped me to add f_Q and f_Q_next on my waveform.
+and therefore my assert statements. He also helped me to add f_Q and f_Q_next on my waveform.On 31Mar24, Lt Col Trimble helped me debug my code, specifically in my output logic for o_lights_L(0) and the testbench file.
