@@ -11,8 +11,8 @@
 --| ---------------------------------------------------------------------------
 --|
 --| FILENAME      : thunderbird_fsm_tb.vhd (TEST BENCH)
---| AUTHOR(S)     : Capt Phillip Warner, C3C Megan Leong
---| CREATED       : 03/2017, last modified 03/19/2024
+--| AUTHOR(S)     : Capt Phillip Warner, Leah Cook
+--| CREATED       : 03/2017, last modified 04/01/2024
 --| DESCRIPTION   : This file tests the thunderbird_fsm modules.
 --|
 --|
@@ -114,8 +114,8 @@ begin
        -- sequential timing        
        w_reset <= '1';
        wait for k_clk_period;
-             assert w_Light_L = "000" report "did not reset" severity failure;
-             assert w_Light_R = "000" report "did not reset" severity failure;
+             assert w_Light_L = "000" report "no reset" severity failure;
+             assert w_Light_R = "000" report "no reset" severity failure;
        
        wait for k_clk_period;
        w_reset <= '0';    
@@ -129,48 +129,46 @@ begin
        w_reset <= '1';
        wait for k_clk_period;
        w_reset <= '0';                
-       
-       -- Hazard lights on
+    
        w_left <= '1'; w_right <= '1'; 
        wait for k_clk_period;
-            assert w_Light_L = "111" report "hazards on; all L lights are on" severity failure;
-            assert w_Light_R = "111" report "hazards on; all R lights are on" severity failure;
+            assert w_Light_L = "111" report "hazards on" severity failure;
+            assert w_Light_R = "111" report "hazards on" severity failure;
        wait for k_clk_period;
-            assert w_Light_L = "000" report "hazards off; all L lights not off" severity failure;
-            assert w_Light_R = "000" report "hazards off; all L lights not off" severity failure;
+            assert w_Light_L = "000" report "hazards off" severity failure;
+            assert w_Light_R = "000" report "hazards off" severity failure;
             
        w_reset <= '1';
        wait for k_clk_period;
        w_reset <= '0';
-       
-       -- Left Blinker on
+     
        w_left <= '1'; w_right <= '0'; 
        wait for k_clk_period;
-            assert w_Light_L = "001" report "first L light not on" severity failure;
-            assert w_Light_R = "000" report "not all R lights off" severity failure;
+            assert w_Light_L = "001" report "left light not on" severity failure;
+            assert w_Light_R = "000" report "right light on" severity failure;
        wait for k_clk_period;
-            assert w_Light_L = "011" report "first and second L lights not on" severity failure;
-            assert w_Light_R = "000" report "not all R lights off" severity failure;
+            assert w_Light_L = "011" report "left lights not on" severity failure;
+            assert w_Light_R = "000" report "right light on" severity failure;
        wait for k_clk_period;
-            assert w_Light_L = "111" report "not all L lights on" severity failure;
-            assert w_Light_R = "000" report "not all R lights off" severity failure;
+            assert w_Light_L = "111" report "not all left lights on" severity failure;
+            assert w_Light_R = "000" report "right light on" severity failure;
        wait for k_clk_period;
        
        w_reset <= '1';
        wait for k_clk_period;
        w_reset <= '0';
               
-       -- Right Blinker on
+       
        w_left <= '0'; w_right <= '1'; 
        wait for k_clk_period;
-            assert w_Light_L = "000" report "not all L lights off" severity failure;
-            assert w_Light_R = "001" report "first R light not on" severity failure;
+            assert w_Light_L = "000" report "left light on" severity failure;
+            assert w_Light_R = "001" report "right light not on" severity failure;
        wait for k_clk_period;
-            assert w_Light_L = "000" report "not all L lights off" severity failure;
-            assert w_Light_R = "011" report "first and second R lights not on" severity failure;
+            assert w_Light_L = "000" report "left light on" severity failure;
+            assert w_Light_R = "011" report "right lights not on" severity failure;
        wait for k_clk_period;
-            assert w_Light_L = "000" report "not all L lights off" severity failure;
-            assert w_Light_R = "111" report "not all R lights on" severity failure;
+            assert w_Light_L = "000" report "left light on" severity failure;
+            assert w_Light_R = "111" report "not all right lights on" severity failure;
        wait for k_clk_period;
               
        w_reset <= '1'; 

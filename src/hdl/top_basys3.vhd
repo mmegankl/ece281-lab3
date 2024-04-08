@@ -11,8 +11,8 @@
 --| ---------------------------------------------------------------------------
 --|
 --| FILENAME      : top_basys3.vhd
---| AUTHOR(S)     : Capt Phillip Warner, C3C Megan Leong
---| CREATED       : 02/22/2018, last modified 3/21/24
+--| AUTHOR(S)     : Capt Phillip Warner, Leah Cook
+--| CREATED       : 02/22/2018, last modified 4/03/24
 --| DESCRIPTION   : This file implements the top level module for a BASYS 3 to 
 --|					drive a Thunderbird taillight controller FSM.
 --|
@@ -65,14 +65,10 @@ entity top_basys3 is
 	port(
 
 		clk     :   in std_logic; -- native 100MHz FPGA clock
-		
-		-- Switches (16 total)
-		sw  	:   in std_logic_vector(15 downto 0); -- sw(15) = left; sw(0) = right
+	
+		sw  	:   in std_logic_vector(15 downto 0); 
 
-		-- LEDs (16 total)
-		-- taillights (LC, LB, LA, RA, RB, RC)
-		led 	:   out std_logic_vector(15 downto 0);  -- led(15:13) --> L
-                                                        -- led(2:0)   --> R
+		led 	:   out std_logic_vector(15 downto 0);  
 		
 		-- Buttons (5 total)
 		--btnC	:	in	std_logic
@@ -103,7 +99,7 @@ end component thunderbird_fsm;
         );
     end component clock_divider;
     
-        signal w_clk : std_logic;        --this wire provides the connection between o_clk and stoplight clk
+        signal w_clk : std_logic;        
 
   
 begin
@@ -121,8 +117,8 @@ begin
       );
       
       --Complete the clock_divider portmap below based on the design provided	
-          clkdiv_inst : clock_divider         --instantiation of clock_divider to take 
-          generic map ( k_DIV => 25000000 ) -- 4 Hz clock from 100 MHz
+          clkdiv_inst : clock_divider         
+          generic map ( k_DIV => 25000000 ) -- convert MHz to Hz 
           port map (                          
               i_clk   => clk,
               i_reset => btnL,
